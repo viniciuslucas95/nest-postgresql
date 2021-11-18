@@ -1,0 +1,36 @@
+services:
+  api_postgresql:
+    image: postgres
+    container_name: api_postgresql
+    restart: always
+    environment:
+      POSTGRES_USER: superpostgresql
+      POSTGRES_PASSWORD: superpostgresql
+    volumes:
+      - ./postgresql-data:/var/lib/postgresql/data
+      - ./src/scripts:/docker-entrypoint-initdb.d
+    ports:
+      - 5432:5432
+  api_server:
+    image: node
+    container_name: api_server
+    restart: always
+    ports:
+      - 5056:5056
+    volumes:
+      - ./:/usr/api/
+    working_dir: /usr/api
+    command: bash -c "npm start"
+    depends_on:
+      - api_postgresql
+  api_pgadmin:
+    image: dpage/pgadmin4
+    container_name: api_pgadmin
+    restart: always
+    ports:
+      - 8080:80
+    environment:
+      PGADMIN_DEFAULT_EMAIL: pgadmin@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: pgadmin
+    depends_on:
+      - api_postgresql
