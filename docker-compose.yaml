@@ -1,3 +1,4 @@
+# Buildar o projeto antes com "nest build", vai precisar ter instalado o nest-cli (npm install -g @nestjs/cli)
 services:
   api_postgresql:
     image: postgres
@@ -8,7 +9,7 @@ services:
       POSTGRES_PASSWORD: superpostgresql
     volumes:
       - ./postgresql-data:/var/lib/postgresql/data
-      - ./src/scripts:/docker-entrypoint-initdb.d
+      - ./scripts/db:/docker-entrypoint-initdb.d
     ports:
       - 5432:5432
   api_server:
@@ -18,9 +19,10 @@ services:
     ports:
       - 5056:5056
     volumes:
-      - ./:/usr/api/
+      - ./dist:/usr/api/dist
+      - ./package.json:/usr/api/package.json
     working_dir: /usr/api
-    command: bash -c "npm run start:dev"
+    command: bash -c "npm install && npm run start:prod"
     depends_on:
       - api_postgresql
   api_pgadmin:

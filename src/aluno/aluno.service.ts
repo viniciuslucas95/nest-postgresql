@@ -60,7 +60,7 @@ export class AlunoService {
       /([^\w!' áÁéÉíÍóÓúÚàÀèÈìÌòÒùÙãÃõÕâÂêÊîÎôÔûÛçÇ])([\d])*/gimu,
     )[1];
     if (nomeChecado)
-      throw new BadRequestException("Nome só pode ter letras e '.");
+      throw new BadRequestException('Nome com caracteres inválidos.');
   }
 
   private validarCpf(cpf: number) {
