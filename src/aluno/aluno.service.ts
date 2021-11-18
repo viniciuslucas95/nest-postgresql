@@ -1,6 +1,9 @@
-import { ConflictException, Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { BadRequestException } from '@nestjs/common';
 import { AlunoRepository } from './aluno.repository';
 import { IAtualizarAlunoDto, ICriarAlunoDto } from './dtos';
 
@@ -16,12 +19,14 @@ export class AlunoService {
     this.validarCpf(cpf);
     this.validarNome(nome);
     const aluno = await this.alunoRepository.buscarAlunoAsync(cpf);
-    if (aluno) throw new ConflictException('Cpf já registrado');
+    if (aluno) throw new ConflictException('Cpf já registrado.');
     await this.alunoRepository.criarAlunoAsync(dados);
   }
 
   async atualizarAlunoAsync(cpf: number, dados: Partial<IAtualizarAlunoDto>) {
     const aluno = await this.alunoRepository.buscarAlunoAsync(cpf);
+    if (!aluno) throw new BadRequestException('Aluno não encontrado.');
+    if (aluno.cpf === dados.cpf) new BadRequestException('Mesmo cpf enviado.');
     if (dados.cpf) {
       this.validarCpf(dados.cpf);
       aluno.cpf = dados.cpf;
@@ -49,15 +54,18 @@ export class AlunoService {
     if (typeof nome !== 'string')
       throw new BadRequestException('Formato errado do nome. Apenas string.');
     if (!nome) throw new BadRequestException('Nome não pode ser vazio.');
-    const nomeChecado = nome.replace(/([\w!'])/gimu, '');
-    if (nomeChecado.length < 1)
+
+    const nomeChecado = nome.split(
+      /([^\w!' áÁéÉíÍóÓúÚàÀèÈìÌòÒùÙãÃõÕâÂêÊîÎôÔûÛçÇ])([\d])*/gimu,
+    )[1];
+    if (nomeChecado)
       throw new BadRequestException("Nome só pode ter letras e '.");
   }
 
   private validarCpf(cpf: number) {
     if (typeof cpf !== 'number')
       throw new BadRequestException('Formato errado do cpf. Apenas números.');
-    if (cpf > 11 || cpf < 11)
+    if (cpf < 10000000000 || cpf > 99999999999)
       throw new BadRequestException('Cpf precisa ter 11 dígitos.');
   }
 }

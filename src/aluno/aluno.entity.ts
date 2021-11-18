@@ -10,7 +10,7 @@ import {
 @Entity()
 @Unique(['cpf'])
 export class Aluno extends BaseEntity {
-  @PrimaryColumn({ nullable: false, type: 'bigint' })
+  @PrimaryColumn('bigint')
   cpf: number;
 
   @Column({ nullable: false, type: 'varchar', length: 64 })

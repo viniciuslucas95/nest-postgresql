@@ -41,7 +41,7 @@ export class AlunoController {
     return this.alunosService.buscarTodosAlunosAsync();
   }
 
-  @Get(':id')
+  @Get(':cpf')
   async buscarAlunoAsync(@Param('cpf') cpf: number) {
     return this.alunosService.buscarAlunoAsync(+cpf);
   }

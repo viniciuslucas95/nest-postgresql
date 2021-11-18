@@ -24,7 +24,7 @@ export class AlunoRepository extends Repository<Aluno> {
     });
   }
 
-  async buscarAlunoAsync(cpf: number) {
+  async buscarAlunoAsync(cpf: number): Promise<Aluno | undefined> {
     return await Aluno.findOne(cpf);
   }
 
