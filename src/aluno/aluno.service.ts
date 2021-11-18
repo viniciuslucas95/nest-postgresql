@@ -26,7 +26,8 @@ export class AlunoService {
   async atualizarAlunoAsync(cpf: number, dados: Partial<IAtualizarAlunoDto>) {
     const aluno = await this.alunoRepository.buscarAlunoAsync(cpf);
     if (!aluno) throw new BadRequestException('Aluno não encontrado.');
-    if (aluno.cpf === dados.cpf) new BadRequestException('Mesmo cpf enviado.');
+    if (aluno.cpf == dados.cpf)
+      throw new BadRequestException('Mesmo cpf enviado.');
     if (dados.cpf) {
       this.validarCpf(dados.cpf);
       aluno.cpf = dados.cpf;

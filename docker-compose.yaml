@@ -20,7 +20,7 @@ services:
     volumes:
       - ./:/usr/api/
     working_dir: /usr/api
-    command: bash -c "npm start"
+    command: bash -c "npm run start:dev"
     depends_on:
       - api_postgresql
   api_pgadmin:
